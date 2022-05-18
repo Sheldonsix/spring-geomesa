@@ -42,7 +42,7 @@ public interface IGeomesaDataConfig {
      * @param: size
      * @return java.util.List<org.opengis.feature.simple.SimpleFeature>
      **/
-    List<SimpleFeature> getData(int offset, int size);
+    List<SimpleFeature> getData(int offset);
 
     /**
      * @author sheldon

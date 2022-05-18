@@ -98,7 +98,7 @@ public class GeomesaRepository implements IGeomesaRepository {
     @Override
     public List<SimpleFeature> getFeatures(IGeomesaDataConfig data) {
         System.out.println("获得 csv 文件转换的数据");
-        List<SimpleFeature> features = data.getData(2, 1000);
+        List<SimpleFeature> features = data.getData(1);
         System.out.println();
         return features;
     }

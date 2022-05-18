@@ -18,24 +18,21 @@
 		<swagger.version>2.9.2</swagger.version>
 		<lombok.version>1.16.16</lombok.version>
 
-		<geomesa.version>3.2.2</geomesa.version>
-		<geotools.version>23.3</geotools.version>
+		<geomesa.version>3.3.0</geomesa.version>
+		<gt.version>23.3</gt.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<scala.abi.version>2.11</scala.abi.version>
+		<scala.abi.version>2.12</scala.abi.version>
 		<scala.version>2.11.7</scala.version>
 
 		<!-- environment specific variables-->
 		<accumulo.version>2.0.0</accumulo.version>
 		<accumulo.guava.version>28.0-jre</accumulo.guava.version>
-		<zookeeper.version>3.7.0</zookeeper.version>
-		<hadoop.version>3.3.2</hadoop.version>
+		<zookeeper.version>3.4.14</zookeeper.version>
+		<hadoop.version>2.8.5</hadoop.version>
 		<hbase.hadoop.version>2.5.2</hbase.hadoop.version>
-		<kafka.version>2.1.1</kafka.version>
-		<storm.version>1.0.2</storm.version>
-		<hbase.version>2.4.11</hbase.version>
-		<cassandra.version>3.0.0</cassandra.version>
+		<hbase.version>2.2.3</hbase.version>
 	</properties>
 	<dependencies>
 		<!--Spring Boot-->
@@ -55,6 +52,12 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
 			<version>${swagger.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -72,45 +75,84 @@
 		<!-- this scope:import injects the entire dependencyManagement section from the main GeoMesa pom -->
 		<dependency>
 			<groupId>org.locationtech.geomesa</groupId>
-			<artifactId>geomesa_2.11</artifactId>
+			<artifactId>geomesa_${scala.abi.version}</artifactId>
 			<version>${geomesa.version}</version>
 			<type>pom</type>
 			<scope>import</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.locationtech.geomesa</groupId>
-			<artifactId>geomesa-utils_${scala.abi.version}</artifactId>
-			<version>${geomesa.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.locationtech.geomesa</groupId>
-			<artifactId>geomesa-index-api_${scala.abi.version}</artifactId>
-			<version>${geomesa.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.locationtech.geomesa</groupId>
-			<artifactId>geomesa-feature-avro_${scala.abi.version}</artifactId>
-			<version>${geomesa.version}</version>
-		</dependency>
-
-<!--		<dependency>-->
-<!--			<groupId>cn.edu.whut</groupId>-->
-<!--			<artifactId>spring-geomesa</artifactId>-->
-<!--			<version>0.0.1-SNAPSHOT</version>-->
-<!--		</dependency>-->
-
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-geojson</artifactId>
-			<version>${geotools.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.locationtech.geomesa</groupId>
 			<artifactId>geomesa-hbase-datastore_${scala.abi.version}</artifactId>
 			<version>${geomesa.version}</version>
-			<type>pom</type>
-			<scope>import</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>scala-xml_2.12</artifactId>
+					<groupId>org.scala-lang.modules</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>curator-recipes</artifactId>
+					<groupId>org.apache.curator</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>paranamer</artifactId>
+					<groupId>com.thoughtworks.paranamer</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsr305</artifactId>
+					<groupId>com.google.code.findbugs</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>org.locationtech.geomesa</groupId>
+			<artifactId>geomesa-utils_${scala.abi.version}</artifactId>
+			<version>${geomesa.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>scala-library</artifactId>
+					<groupId>org.scala-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>objenesis</artifactId>
+					<groupId>org.objenesis</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.locationtech.geomesa</groupId>
+			<artifactId>geomesa-index-api_${scala.abi.version}</artifactId>
+			<version>${geomesa.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-io</artifactId>
+					<groupId>commons-io</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-net</artifactId>
+					<groupId>commons-net</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.locationtech.geomesa</groupId>
+			<artifactId>geomesa-feature-avro_${scala.abi.version}</artifactId>
+			<version>${geomesa.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>commons-compress</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<!-- redefine provided dependencies as runtime for ease in setting up the classpath -->
@@ -119,6 +161,20 @@
 			<artifactId>hbase-client</artifactId>
 			<version>${hbase.version}</version>
 			<scope>compile</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>error_prone_annotations</artifactId>
+					<groupId>com.google.errorprone</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jcodings</artifactId>
+					<groupId>org.jruby.jcodings</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
@@ -129,6 +185,52 @@
 			<groupId>org.apache.hbase</groupId>
 			<artifactId>hbase-server</artifactId>
 			<version>${hbase.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-cli</artifactId>
+					<groupId>commons-cli</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-io</artifactId>
+					<groupId>commons-io</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>htrace-core4</artifactId>
+					<groupId>org.apache.htrace</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>avro</artifactId>
+					<groupId>org.apache.avro</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-compress</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-jaxrs</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-xc</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>netty</artifactId>
+					<groupId>io.netty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-reload4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hbase</groupId>
@@ -144,6 +246,16 @@
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
 			<version>${zookeeper.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>slf4j-reload4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsr305</artifactId>
+					<groupId>com.google.code.findbugs</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -151,17 +263,114 @@
 			<version>20.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-wkt</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-geojson</artifactId>
+			<version>${gt.version}</version>
+		</dependency>
+
 		<!-- redefine provided dependencies as runtime for ease in setting up the classpath -->
 
+		<!-- Hadoop -->
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-common</artifactId>
 			<version>${hadoop.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>avro</artifactId>
+					<groupId>org.apache.avro</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>htrace-core4</artifactId>
+					<groupId>org.apache.htrace</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-core-asl</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jackson-mapper-asl</artifactId>
+					<groupId>org.codehaus.jackson</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jsr305</artifactId>
+					<groupId>com.google.code.findbugs</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-reload4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-math3</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-lang</artifactId>
+					<groupId>commons-lang</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-io</artifactId>
+					<groupId>commons-io</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-compress</artifactId>
+					<groupId>org.apache.commons</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-cli</artifactId>
+					<groupId>commons-cli</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>curator-recipes</artifactId>
+					<groupId>org.apache.curator</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>curator-client</artifactId>
+					<groupId>org.apache.curator</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-client</artifactId>
 			<version>${hadoop.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-cli</artifactId>
+					<groupId>commons-cli</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-reload4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
@@ -172,6 +381,28 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-auth</artifactId>
 			<version>${hadoop.version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>slf4j-reload4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>curator-framework</artifactId>
+					<groupId>org.apache.curator</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>curator-client</artifactId>
+					<groupId>org.apache.curator</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -191,6 +422,21 @@
 			<version>1.2.17</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+			<version>4.3.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>zookeeper</artifactId>
+					<groupId>org.apache.zookeeper</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>guava</artifactId>
+					<groupId>com.google.guava</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -212,6 +458,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.5.3</version>
+			</plugin>
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -237,6 +487,7 @@
 				</executions>
 			</plugin>
 		</plugins>
+
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -310,17 +561,20 @@
 		<!-- geotools -->
 		<repository>
 			<id>osgeo</id>
-			<name>OSGeo Release Repository</name>
-			<url>https://repo.osgeo.org/repository/release/</url>
-			<snapshots><enabled>false</enabled></snapshots>
-			<releases><enabled>true</enabled></releases>
+			<url>https://repo.osgeo.org/repository/release</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
-			<id>osgeo-snapshot</id>
-			<name>OSGeo Snapshot Repository</name>
-			<url>https://repo.osgeo.org/repository/snapshot/</url>
-			<snapshots><enabled>true</enabled></snapshots>
-			<releases><enabled>false</enabled></releases>
+			<id>osgeo-snapshots</id>
+			<url>https://repo.osgeo.org/repository/snapshot</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>conjars.org</id>

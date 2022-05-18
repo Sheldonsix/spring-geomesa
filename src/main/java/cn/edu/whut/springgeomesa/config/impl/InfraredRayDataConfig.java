@@ -88,7 +88,7 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
      * @return java.util.List<org.opengis.feature.simple.SimpleFeature> 返回 SimpleFeature 列表
      **/
     @Override
-    public List<SimpleFeature> getData(int offset, int size) {
+    public List<SimpleFeature> getData(int offset) {
         // 初始化
         List<SimpleFeature> features = new ArrayList<>();
 
@@ -99,7 +99,7 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
         }
 
         // 数据中时间的格式：yyyy/M/d H:m
-        DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("yyy/M/d H:m", Locale.CHINA);
+        DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("yyyy/M/d H:m", Locale.CHINA);
 
         // 创建 Builder
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder(getSimpleFeatureType());
@@ -110,8 +110,6 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
                 // 从 offset 行开始处理 size 个 record 转成 SimpleFeature
                 if (record.getRecordNumber() < offset + 2) {
                     continue;
-                } else if (record.getRecordNumber() >= offset + 2 + size) {
-                    break;
                 }
                 try {
                     // 平台号
@@ -119,7 +117,7 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
                     // 信源号
                     builder.set("SID", record.get(1));
                     // 批号
-                    builder.set("NO", record.get(2));
+                    builder.set("No", record.get(2));
                     // 时间
                     builder.set("dtg", Date.from(LocalDate.parse(record.get(3), dataFormat).atStartOfDay(ZoneOffset.UTC).toInstant()));
                     // 波长类型
@@ -129,7 +127,7 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
                     // 响应时间
                     builder.set("ResponseTime", Double.parseDouble(record.get(6)));
                     // 探测率
-                    builder.set("DetectiveRate", record.get(7));
+                    builder.set("DetectionRate", record.get(7));
 
                     builder.featureUserData(Hints.USE_PROVIDED_FID, Boolean.TRUE);
 

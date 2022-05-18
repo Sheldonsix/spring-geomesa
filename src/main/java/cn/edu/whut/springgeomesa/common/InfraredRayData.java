@@ -57,7 +57,7 @@ public class InfraredRayData implements Data{
         if(this.sft == null) {
             // spec
             String builder = "RECORDID:String," +       // 记录号
-                    "No:Integer," +                     // 批号
+                    "NO:Integer," +                     // 批号
                     "PID:String," +                     // PlatformID 平台号
                     "SID:String," +                     // SourceID 信源号
                     "dtg:Date," +                       // 时间

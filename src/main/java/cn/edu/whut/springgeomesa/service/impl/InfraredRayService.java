@@ -61,12 +61,17 @@ public class InfraredRayService implements IInfraredRayService {
      * @return java.lang.String
      **/
     @Override
-    public String attributeQuery(Map<String, String> params, String SID) {
+    public String attributeQuery(Map<String, String> params, String waveLength, String SID) {
         try {
             // 获取数据源
             DataStore dataStore = geomesaRepository.createDataStore(params);
             // 基本查询语句
-            Query query = new Query(dataTypeName, ECQL.toFilter("SID=" + "'" + SID + "'" + " OR " + "SID=''"));
+            Query query;
+            if (SID != null) {
+                query = new Query(dataTypeName, ECQL.toFilter("Wavelength > " + "'" + waveLength + "'" + " AND " + "Wavelength < " + "'" + (waveLength + 1) + "'" + " AND " +"SID = " + SID));
+            } else {
+                query = new Query(dataTypeName, ECQL.toFilter("Wavelength > "  + waveLength + " AND " + "Wavelength < " + (Integer.parseInt(waveLength) + 1)));
+            }
             logger.info("正在查询：" + ECQL.toCQL(query.getFilter()));
             if (query.getPropertyNames() != null) {
                 logger.info("返回属性： " + Arrays.asList(query.getPropertyNames()));
@@ -91,7 +96,7 @@ public class InfraredRayService implements IInfraredRayService {
     /**
      * @author sheldon
      * @date 2022/5/8
-     * @description //TODO
+     * @description 总方法：创建数据源并写入数据
      * @param: params
      * @return java.lang.Boolean
      **/
@@ -233,7 +238,7 @@ public class InfraredRayService implements IInfraredRayService {
     /**
      * @author sheldon
      * @date 2022/5/8
-     * @description //TODO
+     * @description 总方法：删除数据源
      * @param: params
      * @return java.lang.Boolean
      **/
@@ -246,6 +251,47 @@ public class InfraredRayService implements IInfraredRayService {
         } catch (Exception e) {
             logger.error("删除数据失败：", e);
             throw new RuntimeException("删除数据失败：", e);
+        }
+    }
+
+    /**
+     * @author sheldon
+     * @date 2022/5/17
+     * @description 时空交互查询
+     * @param: params
+     * @param: catalogName
+     * @param: SID
+     * @param: PID
+     * @param: waveLength
+     * @param: responseTime
+     * @param: detectionRate
+     * @return java.lang.String
+     **/
+    @Override
+    public String spatiotemporalAttributeQuery(Map<String, String> params, String SID, String PID, String No, String waveLength) {
+        try {
+            // 获得数据源
+            DataStore dataStore = geomesaRepository.createDataStore(params);
+            Query query = new Query(dataTypeName, ECQL.toFilter("SID = " + SID + " AND " + "PID = " + PID + " AND " + "Wavelength > " + waveLength +" AND " + "Wavelength < " + (Integer.parseInt(waveLength) + 1) + " AND " + "No = " + No),
+                                    new String[]{"No", "WavelengthType"});
+            logger.info("正在查询：" + ECQL.toCQL(query.getFilter()));
+            if (query.getPropertyNames() != null) {
+                logger.info("返回属性： " + Arrays.asList(query.getPropertyNames()));
+            }
+            // 获取 FeatureSource
+            SimpleFeatureSource featureSource = dataStore.getFeatureSource(dataTypeName);
+            // 获取 featureCollection
+            SimpleFeatureCollection featureCollection = featureSource.getFeatures(query);
+            FeatureJSON featureJSON = new FeatureJSON();
+            StringWriter writer = new StringWriter();
+            logger.info("正在写 GeoJson 数据： ");
+            // 写出 GeoJson 格式数据
+            featureJSON.writeFeatureCollection(featureCollection, writer);
+            String json = writer.toString();
+            return json;
+        } catch (Exception e) {
+            logger.error("时空及属性查询：" + e);
+            throw new RuntimeException("时空及属性查询：" + e);
         }
     }
 
