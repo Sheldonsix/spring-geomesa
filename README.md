@@ -28,3 +28,18 @@ SpringBoot &amp; GeoMesa
 | 名称 | 版本 |
 | :----: | :----: |
 | Postman | 9.16.0 |
+
+## 重要依赖及其版本
+
+| 名称 | 版本 |
+| :----: | :----: |
+| spring-boot | 2.6.7 |
+| swagger | 2.9.2 |
+| scala | 2.11.7 |
+| hadoop | 2.8.5 |
+| hbase | 2.2.3 |
+| zookeeper | 3.4.14 |
+| guava | 20.0 |
+| curator | 4.3.0 |
+
+> 其他依赖见 `pom.xml`
