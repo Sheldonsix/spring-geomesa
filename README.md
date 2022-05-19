@@ -45,6 +45,47 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 ## 服务器端部署
 
+由 Vmware 虚拟化得到三个 Linux 虚拟机。
+
+### 虚拟机配置
+1. 修改各虚拟机的机器名。
+
+    ```
+    nano /etc/hostname
+    ```
+
+分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
+
+2. 修改三台机器的 `/etc/hosts`：
+
+    ```
+    nano /etc/hosts
+    # 添加以下内容，这里的 IP 地址为虚拟机的内网 IP。
+    192.168.220.21 master
+    192.168.220.22 slave1
+    192.168.220.23 slave2
+    ```
+
+3. ssh 配置
+
+    ```
+    # 在 master 上生成一对公钥和密钥
+    ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+    # 将公钥拷贝到 master, slave1, slave2 上。
+    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+    scp ~/.ssh/id_rsa.pub root@slave1:~
+    scp ~/.ssh/id_rsa.pub root@slave2:~
+    # 在 slave1 机器上
+    mkdir .ssh
+    cat id_rsa.pub >> .ssh/authorized_keys
+    chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
+    # 在 slave2 机器上
+    mkdir .ssh
+    cat id_rsa.pub >> .ssh/authorized_keys
+    chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
+    ```
+
+
 ### 配置 JDK
 1. 从 [Oracle官网](https://www.oracle.com/java/technologies/downloads/) 下载对应系统的 Java8， **注意**：最新版本为 Java17，但 Java8 对 HBase 支持度最好。
 <br>
@@ -77,10 +118,10 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 4. 输入命令 `source /etc/profile` 使配置的环境变量生效。
 5. 输入命令 `java -version`，看到版本即安装成功。
     
-    ![Java_version.png](http://49.232.218.224/liurx/Hadoop_ZooKeeper_HBase_GeoMesa_Deployment/raw/branch/master/%e5%9b%be%e7%89%87/Java_version.png)
+    ![Java_version.png](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/Java_version.png)
     
 ---
-### Hadoop 伪分布式部署
+### Hadoop 分布式部署
 1. 在 `/usr/local/` 目录下新建一个目录 `hadoop`。
     ```
     mkdir /usr/local/hadoop
