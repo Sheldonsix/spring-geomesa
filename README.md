@@ -48,18 +48,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 由 Vmware 虚拟化得到三个 Linux 虚拟机。
 
 ### 虚拟机配置
-<<<<<<< HEAD
-1. 修改各虚拟机的机器名。
-
-    ```
-    nano /etc/hostname
-    ```
-
-分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
-
-2. 修改三台机器的 `/etc/hosts`：
-
-=======
 
 1. 修改各虚拟机的机器名。
     ```
@@ -68,7 +56,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
 
 2. 修改三台机器的 `/etc/hosts`：
->>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     nano /etc/hosts
     # 添加以下内容，这里的 IP 地址为虚拟机的内网 IP。
@@ -78,10 +65,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
 
 3. ssh 配置
-<<<<<<< HEAD
-
-=======
->>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     # 在 master 上生成一对公钥和密钥
     ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
@@ -98,10 +81,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     cat id_rsa.pub >> .ssh/authorized_keys
     chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
     ```
-<<<<<<< HEAD
-=======
     在 `master` 机器使用 `ssh slave1` 和 `ssh slave2` 命令测试能否免密登录另外两台机器。
->>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
 
 
 ### 配置 JDK
@@ -142,12 +122,8 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 6. 在另外两台机器 `slave1`、`slave2` 上进行相同的配置。
 ---
 ### Hadoop 分布式部署
-<<<<<<< HEAD
-1. 在 `/usr/local/` 目录下新建一个目录 `hadoop`。
-=======
 
 1. 在 `master` 机器新建以下目录。
->>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     mkdir /usr/local/hadoop
     mkdir /usr/local/hadoop/tmp 
