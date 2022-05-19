@@ -48,13 +48,14 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 由 Vmware 虚拟化得到三个 Linux 虚拟机。
 
 ### 虚拟机配置
+
 1. 修改各虚拟机的机器名。
 
     ```
     nano /etc/hostname
     ```
 
-分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
+    分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
 
 2. 修改三台机器的 `/etc/hosts`：
 
@@ -89,8 +90,9 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 
 ### 配置 JDK
+
 1. 在 `master` 机器上，从 [Oracle官网](https://www.oracle.com/java/technologies/downloads/) 下载对应系统的 Java8， **注意**：最新版本为 Java17，但 Java8 对 HBase 支持度最好。
-<br>
+
 2. 在 `/usr/local/` 目录下新建一个目录 `jdk`，
     
     ```
@@ -102,6 +104,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
     tar -zxvf jdk-8u321-linux-x64.tar.gz
     ```
+
 3. 解压得到新的目录 `jdk1.8.0_321`，进入该目录，并配置环境变量，
     ```
     cd jdk1.8.0_321
