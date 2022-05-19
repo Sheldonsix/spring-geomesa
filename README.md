@@ -320,34 +320,64 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 ---
 ### ZooKeeper 部署
 
-1. 在 `/usr/local/` 路径下新建目录 `zookeeper`：
+1. 在 `master` 机器中新建目录 `zookeeper`：
     ```
     mkdir /usr/local/zookeeper
     cd /usr/local/zookeeper
     ```
 
-2. 在 [Apache 镜像站](https://zookeeper.apache.org/releases.html) 下载最新的稳定版，此处下载的 ZooKeeper 版本为 `Apache ZooKeeper 3.6.3`，**注意**，此处需要下载的是 ZooKeeper 的可执行版本(apache-zookeeper-3.6.3-bin)，而并不是源码。下载完成之后解压：
+2. 在 [Apache 镜像站](https://zookeeper.apache.org/releases.html) 下载最新的稳定版，此处下载的 ZooKeeper 版本为 `Apache ZooKeeper 3.7.0`，**注意**，此处需要下载的是 ZooKeeper 的可执行版本(apache-zookeeper-3.7.0-bin)，而并不是源码。下载完成之后解压：
     ```
-    wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz'
-    tar -xvzf apache-zookeeper-3.6.3-bin.tar.gz
-    cd apache-zookeeper-3.6.3-bin
+    wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz'
+    tar -xvzf apache-zookeeper-3.7.0-bin.tar.gz
+    cd apache-zookeeper-3.7.0-bin
     ```
 
-3. 单机操作。创建 `conf/zoo.cfg` 文件，文件内容如下：
+3. 创建 `conf/zoo.cfg` 配置文件，添加以下配置：
     ```
     # tickTime：ZooKeeper 使用的基本时间单位，以毫秒为单位。
     tickTime=2000
     # dataDir：存储内存中数据库快照的位置，以及更新数据库的日志。
-    dataDir=/usr/local/zookeeper/apache-zookeeper-3.6.3-bin/data  # 此处为任意一个空目录即可
+    dataDir=/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data  # 此处为任意一个空目录即可
     # clientPort：侦听客户端连接的端口
     clientPort=2181
+    # server. 之后的数字为机器的编号 myid
+    server.1=master:2888:3888
+    server.2=slave1:2888:3888
+    server.3=slave2:2888:3888
     ```
-    保存退出之后，可以启动 ZooKeeper：
+    保存退出。
+
+4. 创建 `myid` 文件，写入编号：
     ```
-    bin/zkServer.sh start
+    nano data/myid
+    # master 机器编号为 1
+    1
     ```
 
-4. 连接到 ZooKeeper：
+5. 将配置好的 ZooKeeper 目录复制到其他两台机器上，并修改对应的 `myid`，`slave1` 对应编号 `2`，`slave2` 对应编号 `3`。
+    ```
+    scp -r /usr/local/zookeeper root@slave1:/usr/local/
+    scp -r /usr/local/zookeeper root@slave2:/usr/local/
+    ```
+
+6. 启动集群，以下命令三台机器都需要运行：
+    ```
+    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh start
+    ```
+    查看集群的状态：
+    ```
+    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh status
+    ```
+    集群的状态输出如下（`Mode` 会有一个 `leader`，两个 `follower`）：
+    ```
+    ZooKeeper JMX enabled by default
+    Using config: /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/../conf/zoo.cfg
+    Client port found: 2181. Client address: localhost. Client SSL: false.
+    Mode: follower
+    ```
+
+7. 连接到 ZooKeeper 客户端：
     ```
     bin/zkCli.sh -server 127.0.0.1:2181
     ```
