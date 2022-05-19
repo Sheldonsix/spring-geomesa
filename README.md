@@ -117,7 +117,9 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
     键入 <kbd>Ctrl</kbd> + <kbd>x</kbd> 再输入 `y`，即可保存。
 <br>
+
 4. 输入命令 `source /etc/profile` 使配置的环境变量生效。
+
 5. 输入命令 `java -version`，看到版本即安装成功。
     
     ![Java_version.png](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/Java_version.png)
