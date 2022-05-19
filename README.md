@@ -1,14 +1,20 @@
 # Spring-GeoMesa
 SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询。
 
+<<<<<<< HEAD
 <div align=center>
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> dev
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/springboot-logo.png" width="200" /> 
-</div>
 
-<div align=center>
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/geomesa-logo.png" width="200" /> 
-</div>
 
+<<<<<<< HEAD
+=======
+>>>>>>> github/dev
+>>>>>>> dev
 ### 服务器部署版本
 
 | 名称 | 版本 |
@@ -324,34 +330,64 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 ---
 ### ZooKeeper 部署
 
-1. 在 `/usr/local/` 路径下新建目录 `zookeeper`：
+1. 在 `master` 机器中新建目录 `zookeeper`：
     ```
     mkdir /usr/local/zookeeper
     cd /usr/local/zookeeper
     ```
 
-2. 在 [Apache 镜像站](https://zookeeper.apache.org/releases.html) 下载最新的稳定版，此处下载的 ZooKeeper 版本为 `Apache ZooKeeper 3.6.3`，**注意**，此处需要下载的是 ZooKeeper 的可执行版本(apache-zookeeper-3.6.3-bin)，而并不是源码。下载完成之后解压：
+2. 在 [Apache 镜像站](https://zookeeper.apache.org/releases.html) 下载最新的稳定版，此处下载的 ZooKeeper 版本为 `Apache ZooKeeper 3.7.0`，**注意**，此处需要下载的是 ZooKeeper 的可执行版本(apache-zookeeper-3.7.0-bin)，而并不是源码。下载完成之后解压：
     ```
-    wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.6.3/apache-zookeeper-3.6.3-bin.tar.gz'
-    tar -xvzf apache-zookeeper-3.6.3-bin.tar.gz
-    cd apache-zookeeper-3.6.3-bin
+    wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz'
+    tar -xvzf apache-zookeeper-3.7.0-bin.tar.gz
+    cd apache-zookeeper-3.7.0-bin
     ```
 
-3. 单机操作。创建 `conf/zoo.cfg` 文件，文件内容如下：
+3. 创建 `conf/zoo.cfg` 配置文件，添加以下配置：
     ```
     # tickTime：ZooKeeper 使用的基本时间单位，以毫秒为单位。
     tickTime=2000
     # dataDir：存储内存中数据库快照的位置，以及更新数据库的日志。
-    dataDir=/usr/local/zookeeper/apache-zookeeper-3.6.3-bin/data  # 此处为任意一个空目录即可
+    dataDir=/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data  # 此处为任意一个空目录即可
     # clientPort：侦听客户端连接的端口
     clientPort=2181
+    # server. 之后的数字为机器的编号 myid
+    server.1=master:2888:3888
+    server.2=slave1:2888:3888
+    server.3=slave2:2888:3888
     ```
-    保存退出之后，可以启动 ZooKeeper：
+    保存退出。
+
+4. 创建 `myid` 文件，写入编号：
     ```
-    bin/zkServer.sh start
+    nano data/myid
+    # master 机器编号为 1
+    1
     ```
 
-4. 连接到 ZooKeeper：
+5. 将配置好的 ZooKeeper 目录复制到其他两台机器上，并修改对应的 `myid`，`slave1` 对应编号 `2`，`slave2` 对应编号 `3`。
+    ```
+    scp -r /usr/local/zookeeper root@slave1:/usr/local/
+    scp -r /usr/local/zookeeper root@slave2:/usr/local/
+    ```
+
+6. 启动集群，以下命令三台机器都需要运行：
+    ```
+    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh start
+    ```
+    查看集群的状态：
+    ```
+    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh status
+    ```
+    集群的状态输出如下（`Mode` 会有一个 `leader`，两个 `follower`）：
+    ```
+    ZooKeeper JMX enabled by default
+    Using config: /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/../conf/zoo.cfg
+    Client port found: 2181. Client address: localhost. Client SSL: false.
+    Mode: follower
+    ```
+
+7. 连接到 ZooKeeper 客户端：
     ```
     bin/zkCli.sh -server 127.0.0.1:2181
     ```
@@ -360,36 +396,85 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 ---
 ### HBase 部署
 
-1. 在 `/usr/local/` 路径下新建目录 `hbase`：
+1. 在 `master` 机器新建以下目录：
     ```
     mkdir /usr/local/hbase
+    mkdir /usr/local/hbase/tmp
     cd /usr/local/hbase
     ```
 
-2. 在 [Apache 镜像站](https://dlcdn.apache.org/hbase/) 下载 HBase 镜像，此处选择的是最新的稳定版本 `hbase-2.4.9-bin`。下载完成后解压。
+2. 在 [Apache 镜像站](https://dlcdn.apache.org/hbase/) 下载 HBase 镜像，此处选择的是最新的稳定版本 `hbase-2.4.11-bin`。下载完成后解压。
     ```
-    wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.9-bin.tar.gz'
-    tar -zxvf hbase-2.4.9-bin.tar.gz
-    cd hbase-2.4.9
+    wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.11-bin.tar.gz'
+    tar -zxvf hbase-2.4.11-bin.tar.gz
+    cd hbase-2.4.11
     ```
 
 3. 确保在启动 HBase 之前，已经设置了 `JAVA_HOME` 环境变量。修改 `conf/HBase-env.sh` 文件，添加以下内容：
     ```
-    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_311  # Java 的安装路径
+    # Java 的安装路径
+    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_321  
+    # 不使用 HBase 自带的 ZooKeeper
+    export HBASE_MANAGES_ZK=false 
     ```
-    使用以下命令启动 HBase：
+
+4. 修改 `conf/hbase-site.xml` 文件，在 `<configuration>` 节点加入以下配置：
+    ```
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.wal.provider</name>
+        <value>filesystem</value>
+    </property>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://master:9000/hbase</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>master,slave1,slave2</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data</value>
+    </property>
+        <property>
+        <name>hbase.coprocessor.user.region.classes</name>
+        <value>org.locationtech.geomesa.hbase.server.coprocessor.GeoMesaCoprocessor</value>
+    </property>
+    <property>  
+        <name>hbase.table.sanity.checks</name>  
+        <value>false</value>  
+    </property>
+    ```
+
+5. 配置 `conf/regionservers`，添加从分布式机器的主机名：
+    ```
+    slave1
+    slave2
+    ```
+
+6. 将 HBase 的配置文件复制到其他机器：
+    ```
+    scp -r /usr/local/hbase root@slave1:/usr/local/
+    scp -r /usr/local/hbase root@slave2:/usr/local/
+    ```
+
+7. 启动 HBase：
     ```
     bin/start-hbase.sh
     ```
-    使用 `jps` 来查看有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://localhost:16010`。
+    使用 `jps` 来查看，应该会有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://master:16010`，在各个 slave 上运行 `jps` 应该会有 `HRegionServer` 进程。
 
-4. 连接到 HBase：
+8. 连接到 HBase：
     ```
     ./bin/hbase shell
     ```
     使用 `help` 命令来查看 HBase Shell 的一些基本使用信息，使用 `quit` 命令退出 HBase Shell。
 
-5. 使用以下命令停止所有的 HBase 守护进程：
+9. 使用以下命令停止所有的 HBase 守护进程：
     ```
     ./bin/stop-hbase.sh
     ```
