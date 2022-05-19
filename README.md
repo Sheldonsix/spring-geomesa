@@ -1,13 +1,9 @@
 # Spring-GeoMesa
 SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询。
 
-<div align=center>
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/springboot-logo.png" width="200" /> 
-</div>
 
-<div align=center>
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/geomesa-logo.png" width="200" /> 
-</div>
 
 ### 服务器部署版本
 
