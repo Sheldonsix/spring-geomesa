@@ -87,9 +87,9 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     cd /usr/local/hadoop
     ```
 
-2. 从 [Apache 镜像站](https://dlcdn.apache.org/hadoop/common/) 下载 Hadoop 稳定发行版，此处选择的 Hadoop 版本为最新的稳定版 `hadoop-3.3.1`，并解压。
+2. 从 [Apache 镜像站](https://dlcdn.apache.org/hadoop/common/) 下载 Hadoop 稳定发行版，此处选择的 Hadoop 版本为最新的稳定版 `hadoop-$VERSION`，并解压。
     ```
-    wget 'https://dlcdn.apache.org/hadoop/common/stable/hadoop-3.3.1.tar.gz'
+    wget 'https://dlcdn.apache.org/hadoop/common/hadoop-$VERSION/hadoop-$VERSION.tar.gz'
     tar -zxvf hadoop-3.3.1.tar.gz
     cd hadoop-3.3.1/
     ```
