@@ -1,7 +1,7 @@
 # Spring-GeoMesa
 SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询。
 
-### 部署版本
+### 服务器部署版本
 
 | 名称 | 版本 |
 | :----: | :----: |
@@ -12,7 +12,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 | HBase | hbase-2.4.11 |
 | GeoMesa | geomesa-hbase_2.11-3.2.2 |
 
-### 开发环境
+### 本地开发环境
 
 | 名称 | 版本 |
 | :----: | :----: |
@@ -48,6 +48,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 由 Vmware 虚拟化得到三个 Linux 虚拟机。
 
 ### 虚拟机配置
+<<<<<<< HEAD
 1. 修改各虚拟机的机器名。
 
     ```
@@ -58,6 +59,16 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 2. 修改三台机器的 `/etc/hosts`：
 
+=======
+
+1. 修改各虚拟机的机器名。
+    ```
+    nano /etc/hostname
+    ```
+    分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
+
+2. 修改三台机器的 `/etc/hosts`：
+>>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     nano /etc/hosts
     # 添加以下内容，这里的 IP 地址为虚拟机的内网 IP。
@@ -67,7 +78,10 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
 
 3. ssh 配置
+<<<<<<< HEAD
 
+=======
+>>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     # 在 master 上生成一对公钥和密钥
     ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
@@ -84,55 +98,72 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     cat id_rsa.pub >> .ssh/authorized_keys
     chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
     ```
+<<<<<<< HEAD
+=======
+    在 `master` 机器使用 `ssh slave1` 和 `ssh slave2` 命令测试能否免密登录另外两台机器。
+>>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
 
 
 ### 配置 JDK
-1. 从 [Oracle官网](https://www.oracle.com/java/technologies/downloads/) 下载对应系统的 Java8， **注意**：最新版本为 Java17，但 Java8 对 HBase 支持度最好。
-<br>
+
+1. 在 `master` 机器上，从 [Oracle官网](https://www.oracle.com/java/technologies/downloads/) 下载对应系统的 Java8， **注意**：最新版本为 Java17，但 Java8 对 HBase 支持度最好。
+
 2. 在 `/usr/local/` 目录下新建一个目录 `jdk`，
-    
     ```
     mkdir /usr/local/jdk
     cd /usr/local/jdk
     ```
     将 Java 安装包上传到 `jdk` 目录下，并解压
-    
     ```
-    tar -zxvf jdk-8u311-linux-x64.tar.gz
+    tar -zxvf jdk-8u321-linux-x64.tar.gz
     ```
-3. 解压得到新的目录 `jdk1.8.0_311`，进入该目录，并配置环境变量，
+
+3. 解压得到新的目录 `jdk1.8.0_321`，进入该目录，并配置环境变量，
     ```
-    cd jdk1.8.0_311
+    cd jdk1.8.0_321
     nano /etc/profile
     ```
     在环境变量配置文件中新增以下代码：
-    
     ```
-    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_311
+    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_321
     export JRE_HOME=$JAVA_HOME/jre
     export CLASSPATH=$CLASSPATH:$JAVA_HOME/lib:$JRE_HOME/lib
     export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
     ```
     键入 <kbd>Ctrl</kbd> + <kbd>x</kbd> 再输入 `y`，即可保存。
-<br>
+
 4. 输入命令 `source /etc/profile` 使配置的环境变量生效。
+
 5. 输入命令 `java -version`，看到版本即安装成功。
     
     ![Java_version.png](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/Java_version.png)
     
+
+6. 在另外两台机器 `slave1`、`slave2` 上进行相同的配置。
 ---
 ### Hadoop 分布式部署
+<<<<<<< HEAD
 1. 在 `/usr/local/` 目录下新建一个目录 `hadoop`。
+=======
+
+1. 在 `master` 机器新建以下目录。
+>>>>>>> ed833aed9e79574ae35e0f3c701497ccd39ecb5f
     ```
     mkdir /usr/local/hadoop
+    mkdir /usr/local/hadoop/tmp 
+    mkdir /usr/local/hadoop/var
+    mkdir /usr/local/hadoop/dfs
+    mkdir /usr/local/hadoop/dfs/name
+    mkdir /usr/local/hadoop/dfs/data
     cd /usr/local/hadoop
     ```
 
 2. 从 [Apache 镜像站](https://dlcdn.apache.org/hadoop/common/) 下载 Hadoop 稳定发行版，此处选择的 Hadoop 版本为最新的稳定版 `hadoop-$VERSION`，并解压。
     ```
-    wget 'https://dlcdn.apache.org/hadoop/common/hadoop-$VERSION/hadoop-$VERSION.tar.gz'
-    tar -zxvf hadoop-3.3.1.tar.gz
-    cd hadoop-3.3.1/
+    # 将 $VERSION 更换为相应版本，此处选择的版本是 hadoop-3.2.2，注意此处的链接具有时效性。
+    wget 'https://dlcdn.apache.org/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz'
+    tar -zxvf hadoop-3.2.2.tar.gz
+    cd hadoop-3.2.2/
     ```
 
 3. 修改环境配置文件 `etc/hadoop/hadoop-env.sh`，
@@ -141,96 +172,175 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
     添加以下内容：
     ```
-    # 添加 Java 的安装路径
-    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_311
+    # Java 的安装路径
+    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_321
+    # 获取 root 权限操作 Hadoop
+    export HDFS_NAMENODE_USER="root"
+    export HDFS_DATANODE_USER="root"
+    export HDFS_SECONDARYNAMENODE_USER="root"
+    export YARN_RESOURCEMANAGER_USER="root"
+    export YARN_NODEMANAGER_USER="root"
     ```
     配置文件修改完成后，保存退出，输入命令 `bin/hadoop`，弹出 Hadoop 的使用文档，则说明 Hadoop 环境配置完成。
-<br>
-4. 伪分布式部署，Hadoop 可以以伪分布式模式运行在单个节点上，其中每个 Hadoop 守护进程运行在单独的 Java 进程中。此时所在目录应在 `/usr/local/hadoop/hadoop-3.3.1`，修改 `etc/hadoop/core-site.xml` 文件：
+
+4. 修改 `etc/hadoop/core-site.xml` 文件，在 `<configuration>` 节点加入以下配置：
     ```
-    <configuration>
-        <property>
-            <name>fs.defaultFS</name>
-            <value>hdfs://localhost:9000</value>
-        </property>
-    </configuration>
+    <property>
+        <name>hadoop.tmp.dir</name>
+        <value>/usr/local/hadoop/tmp</value>
+        <description>Abase for other temporary directories.</description>
+    </property>
+    <property>
+        <name>fs.default.name</name>
+        <value>hdfs://master:9000</value>
+    </property>
     ```
-    修改 `etc/hadoop/hdfs-site.xml` 文件：
+    修改 `etc/hadoop/hdfs-site.xml` 文件，在 `<configuration>` 节点加入以下配置：
     ```
-    <configuration>
-        <property>
-            <name>dfs.replication</name>
-            <value>1</value>
-        </property>
-    </configuration>
+    <property>
+        <name>dfs.name.dir</name>
+        <value>/usr/local/hadoop/dfs/name</value>
+        <description>Path on the local filesystem where theNameNode stores the namespace and transactions logs persistently.</description>
+    </property>
+    <property>
+        <name>dfs.data.dir</name>
+        <value>/usr/local/hadoop/dfs/data</value>
+        <description>Comma separated list of paths on the localfilesystem of a DataNode where it should store its blocks.</description>
+    </property>
+    <property>
+        <name>dfs.replication</name>
+        <value>2</value>
+    </property>
+    <property>
+        <name>dfs.permissions</name>
+        <value>false</value>
+        <description>need not permissions</description>
+    </property>
+
     ```
 
-5. 检查能否免密登录 localhost：
+5. 修改 `mapred-site.xml`，在 `<configuration>` 节点内加入以下配置：
     ```
-    ssh localhost
-    ```
-    如果不能免密登录，则执行以下命令：
-    ```
-    ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
-    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-    chmod 0600 ~/.ssh/authorized_keys
+    <property>
+        <name>mapred.job.tracker</name>
+        <value>master:49001</value>
+    </property>
+    
+    <property>
+        <name>mapred.local.dir</name>
+        <value>/usr/local/hadoop/var</value>
+    </property>
+    
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
     ```
 
-6. 格式化文件系统：
+6. 修改 `workers` 文件，加入分布式子节点的机器名：
     ```
+    slave1
+    slave2
+    ```
+
+7. 修改 `yarn-site.xml` 文件，在 `<configuration>` 节点内加入以下配置：
+    ```
+    <property>
+        <name>yarn.resourcemanager.hostname</name>
+        <value>master</value>
+    </property>
+ 
+    <property>
+        <description>The address of the applications manager interface in the RM.</description>
+        <name>yarn.resourcemanager.address</name>
+        <value>${yarn.resourcemanager.hostname}:8032</value>
+    </property>
+ 
+    <property>
+        <description>The address of the scheduler interface.</description>
+        <name>yarn.resourcemanager.scheduler.address</name>
+        <value>${yarn.resourcemanager.hostname}:8030</value>
+    </property>
+ 
+    <property>
+        <description>The http address of the RM web application.</description>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>${yarn.resourcemanager.hostname}:8088</value>
+    </property>
+ 
+    <property>
+        <description>The https adddress of the RM web application.</description>
+        <name>yarn.resourcemanager.webapp.https.address</name>
+        <value>${yarn.resourcemanager.hostname}:8090</value>
+    </property>
+ 
+    <property>
+        <name>yarn.resourcemanager.resource-tracker.address</name>
+        <value>${yarn.resourcemanager.hostname}:8031</value>
+    </property>
+ 
+    <property>
+        <description>The address of the RM admin interface.</description>
+        <name>yarn.resourcemanager.admin.address</name>
+        <value>${yarn.resourcemanager.hostname}:8033</value>
+    </property>
+ 
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+ 
+    <property>
+        <name>yarn.scheduler.maximum-allocation-mb</name>
+        <value>2048</value>
+    </property>
+ 
+    <property>
+        <name>yarn.nodemanager.vmem-pmem-ratio</name>
+        <value>2.1</value>
+    </property>
+ 
+    <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>2048</value>
+    </property>
+    
+    <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+    </property>
+    ```
+
+8. 将配置文件同步到 `slave1`，`slave2` 机器中
+    ```
+    scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave1:/usr/local/hadoop/
+    scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave2:/usr/local/hadoop/
+    ```
+
+6. 启动 Hadoop：
+    ```
+    # 格式化文件系统，只需要格式化一次，下次启动不需要格式化
     bin/hdfs namenode -format
     ```
     启动 NameNode 和 DataNode 守护进程：
     ```
     sbin/start-dfs.sh
     ```
-    日志默认保存路径为 `/usr/local/hadoop/hadoop-3.3.1/logs`。现在可以打开 NameNode 的 WebUI，默认为 `http://localhost:9870`。使用以下命令停止进程
+    启动 Yarn：
     ```
-    sbin/stop-dfs.sh
+    start-yarn.sh
+    ```
+    日志默认保存路径为 `/usr/local/hadoop/hadoop-3.2.2/logs`。现在可以打开 NameNode 的 WebUI，默认为 `http://localhost:9870`。使用以下命令停止进程
+    ```
+    sbin/stop-all.sh
     ```
 
-7. 也可以在 YARN 上通过设置环境参数，运行 ResourceManager 守护进程和 NodeManager 守护进程来 **伪分布式** 运行 MapReduce。在第 6 步完成的基础上，修改 `etc/hadoop/mapred-site.xml` 文件：
-    ```
-    # 配置如下参数，$HADOOP_MAPRED_HOME 为 Hadoop 的安装目录
-    <configuration>
-        <property>
-            <name>mapreduce.framework.name</name>
-            <value>yarn</value>
-        </property>
-        <property>
-            <name>mapreduce.application.classpath</name>
-            <value>$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/*:$HADOOP_MAPRED_HOME/share/hadoop/mapreduce/lib/*</value>
-        </property>
-    </configuration>
-    ```
-    保存退出后，修改 `etc/hadoop/yarn-site.xml` 文件：
-    ```
-    # 配置如下参数
-    <configuration>
-        <property>
-            <name>yarn.nodemanager.aux-services</name>
-            <value>mapreduce_shuffle</value>
-        </property>
-        <property>
-            <name>yarn.nodemanager.env-whitelist</name>
-            <value>JAVA_HOME,HADOOP_COMMON_HOME,HADOOP_HDFS_HOME,HADOOP_CONF_DIR,CLASSPATH_PREPEND_DISTCACHE,HADOOP_YARN_HOME,HADOOP_HOME,PATH,LANG,TZ,HADOOP_MAPRED_HOME</value>
-        </property>
-    </configuration>
-    ```
-    保存退出后，启动 ResourceManager 守护进程和 NodeManager 守护进程：
-    ```
-    sbin/start-yarn.sh
-    ```
-    浏览 ResourceManger 的 WebUI 界面，默认为 `http://localhost:8088/`，使用以下命令停止守护进程：
-    ```
-    sbin/stop-yarn.sh
-    ```
+7. 使用 `jps` 命令查看 Java 进程，此时在 `master` 应该有三个进程 `NameNode`、`SecondaryNameNode`、`ResourceManger`；在 `slave1`、`slave2` 应该有两个进程 `DataNode`、`NodeManager`。
     
 ---
 ### ZooKeeper 部署
 
 1. 在 `/usr/local/` 路径下新建目录 `zookeeper`：
-
     ```
     mkdir /usr/local/zookeeper
     cd /usr/local/zookeeper
@@ -265,6 +375,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     
 ---
 ### HBase 部署
+
 1. 在 `/usr/local/` 路径下新建目录 `hbase`：
     ```
     mkdir /usr/local/hbase
@@ -287,13 +398,13 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     bin/start-hbase.sh
     ```
     使用 `jps` 来查看有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://localhost:16010`。
-<br>
+
 4. 连接到 HBase：
     ```
     ./bin/hbase shell
     ```
     使用 `help` 命令来查看 HBase Shell 的一些基本使用信息，使用 `quit` 命令退出 HBase Shell。
-<br>
+
 5. 使用以下命令停止所有的 HBase 守护进程：
     ```
     ./bin/stop-hbase.sh
@@ -301,15 +412,13 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 ---
 ### GeoMesa 部署
-1.  在 `/usr/local/` 路径下新建目录 `geomesa`：
 
+1.  在 `/usr/local/` 路径下新建目录 `geomesa`：
     ```
     mkdir /usr/local/geomesa
     cd /usr/local/geomesa
-    ```
-    
+    ``` 
     从 [GitHub](https://github.com/locationtech/geomesa/releases/) 下载编译完成的二进制文件（bin），此处选的的是 `geomesa-hbase_2.11-3.2.2-bin.tar.gz`，**注意**：geomesa 有两个版本号，前面的 `2.11` 是它支持的 scala 的版本号，后面的才是它本身的版本号。下载完成之后进行解压：
-
     ```
     wget 'https://github.com/locationtech/geomesa/releases/download/geomesa-3.2.2/geomesa-hbase_2.11-3.2.2-bin.tar.gz'
     tar -zxvf geomesa-hbase_2.11-3.2.2-bin.tar.gz
@@ -317,26 +426,20 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
 
 2. 修改配置信息。在路径 `conf/geomesa-env.sh` 中添加以下环境变量：
-
     ```
     export HADOOP_HOME=/usr/local/hadoop/hadoop-3.3.1
     export HBASE_HOME=/usr/local/hbase/hbase-2.4.9
     export GEOMESA_HBASE_HOME=/usr/local/geomesa/geomesa-hbase_2.11-3.2.2
     export PATH="${PATH}:${GEOMESA_HBASE_HOME}/bin" 
     ```
-
     **注意**：配置 GeoMesa 的环境变量是 `GEOMESA_HBASE_HOME`。
-<br>
 
 3. 部署 GeoMesa-HBase。将 GeoMesa 的 runtime JAR 包拷贝到 HBase 的库目录下。首先启动 Hadoop：
-
     ```
     # 首先启动 Hadoop
     /usr/local/hadoop/hadoop-3.3.1/sbin/start-dfs.sh
     ```
-
     然后需要修改 HBase 的配置文件，文件路径为 `/usr/local/hbase/hbase-2.4.9/conf/hbase-site.xml`，在 `<configuration>...</configuration>` 之间添加以下内容：
-
     ```
     <property>
         <name>hbase.rootdir</name>
@@ -359,23 +462,18 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
         <value>false</value>
     </property>
     ```
-
     然后修改 HBase 的运行环境配置，路径为 `/usr/local/hbase/hbase-2.4.9/conf/hbase-env.sh`，添加以下内容：
-
     ```
     export HBASE_CLASSPATH=/usr/local/hadoop/hadoop-3.3.1
     export HBASE_MANAGES_ZK=true
     ```
-
     最后使用以下命令拷贝到 HDFS 中：
-
     ```
     # ${hbase.rootdir} 参考 HBase 的配置文件 hbase-site.xml
     hadoop fs -put ${GEOMESA_HBASE_HOME}/dist/hbase/geomesa-hbase-distributed-runtime-hbase2_2.11-3.2.2.jar hdfs://localhost:9000/hbase/lib
     ```
 
 4. 注册协处理器。为了使 HBase 在运行时能够访问到 `geomesa-hbase-distributed-runtime` 的 jar 包，需要在 HBase 的配置文件 `hbase-site.xml` 添加以下内容：
-
     ```
     <property>
         <name>hbase.coprocessor.user.region.classes</name>
@@ -384,13 +482,11 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
 
 5. 设置命令行工具，将 HBase 配置文件 `hbase-site.xml` 打包进 `geomesa-hbase-datastore_2.11-3.2.2.jar` 中：
-
     ```
     zip -r /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/lib/geomesa-hbase-datastore_2.11-3.2.2.jar /usr/local/hbase/hbase-2.4.9/conf/hbase-site.xml
     ```
 
 6. 重新启动 Hadoop、HBase、ZooKeeper，然后查看 geomesa-hbase 版本：
-
     ```
     # 重新启动 HBase、Hadoop、ZooKeeper，注意关闭启动的顺序
     /usr/local/hbase/hbase-2.4.9/bin/stop-hbase.sh
