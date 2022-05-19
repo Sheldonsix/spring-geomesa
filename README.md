@@ -55,13 +55,13 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 1. 修改各虚拟机的机器名。
     ```
-    nano /etc/hostname
+    $ nano /etc/hostname
     ```
     分别修改为 `master`，`slave1`，`slave2`，重启虚拟机生效。
 
 2. 修改三台机器的 `/etc/hosts`：
     ```
-    nano /etc/hosts
+    $ nano /etc/hosts
     # 添加以下内容，这里的 IP 地址为虚拟机的内网 IP。
     192.168.220.21 master
     192.168.220.22 slave1
@@ -71,19 +71,19 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 3. ssh 配置
     ```
     # 在 master 上生成一对公钥和密钥
-    ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+    $ ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
     # 将公钥拷贝到 master, slave1, slave2 上。
-    cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-    scp ~/.ssh/id_rsa.pub root@slave1:~
-    scp ~/.ssh/id_rsa.pub root@slave2:~
+    $ cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+    $ scp ~/.ssh/id_rsa.pub root@slave1:~
+    $ scp ~/.ssh/id_rsa.pub root@slave2:~
     # 在 slave1 机器上
-    mkdir .ssh
-    cat id_rsa.pub >> .ssh/authorized_keys
-    chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
+    $ mkdir .ssh
+    $ cat id_rsa.pub >> .ssh/authorized_keys
+    $ chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
     # 在 slave2 机器上
-    mkdir .ssh
-    cat id_rsa.pub >> .ssh/authorized_keys
-    chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
+    $ mkdir .ssh
+    $ cat id_rsa.pub >> .ssh/authorized_keys
+    $ chmod 755 .ssh && chmod 600 ~/.ssh/authorized_keys # 设置权限
     ```
     在 `master` 机器使用 `ssh slave1` 和 `ssh slave2` 命令测试能否免密登录另外两台机器。
 
@@ -94,18 +94,18 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 2. 在 `/usr/local/` 目录下新建一个目录 `jdk`，
     ```
-    mkdir /usr/local/jdk
-    cd /usr/local/jdk
+    $ mkdir /usr/local/jdk
+    $ cd /usr/local/jdk
     ```
     将 Java 安装包上传到 `jdk` 目录下，并解压
     ```
-    tar -zxvf jdk-8u321-linux-x64.tar.gz
+    $ tar -zxvf jdk-8u321-linux-x64.tar.gz
     ```
 
 3. 解压得到新的目录 `jdk1.8.0_321`，进入该目录，并配置环境变量，
     ```
-    cd jdk1.8.0_321
-    nano /etc/profile
+    $ cd jdk1.8.0_321
+    $ nano /etc/profile
     ```
     在环境变量配置文件中新增以下代码：
     ```
@@ -129,26 +129,26 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 1. 在 `master` 机器新建以下目录。
     ```
-    mkdir /usr/local/hadoop
-    mkdir /usr/local/hadoop/tmp 
-    mkdir /usr/local/hadoop/var
-    mkdir /usr/local/hadoop/dfs
-    mkdir /usr/local/hadoop/dfs/name
-    mkdir /usr/local/hadoop/dfs/data
-    cd /usr/local/hadoop
+    $ mkdir /usr/local/hadoop
+    $ mkdir /usr/local/hadoop/tmp 
+    $ mkdir /usr/local/hadoop/var
+    $ mkdir /usr/local/hadoop/dfs
+    $ mkdir /usr/local/hadoop/dfs/name
+    $ mkdir /usr/local/hadoop/dfs/data
+    $ cd /usr/local/hadoop
     ```
 
 2. 从 [Apache 镜像站](https://dlcdn.apache.org/hadoop/common/) 下载 Hadoop 稳定发行版，此处选择的 Hadoop 版本为最新的稳定版 `hadoop-$VERSION`，并解压。
     ```
     # 将 $VERSION 更换为相应版本，此处选择的版本是 hadoop-3.2.2，注意此处的链接具有时效性。
-    wget 'https://dlcdn.apache.org/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz'
-    tar -zxvf hadoop-3.2.2.tar.gz
-    cd hadoop-3.2.2/
+    $ wget 'https://dlcdn.apache.org/hadoop/common/hadoop-3.2.2/hadoop-3.2.2.tar.gz'
+    $ tar -zxvf hadoop-3.2.2.tar.gz
+    $ cd hadoop-3.2.2/
     ```
 
 3. 修改环境配置文件 `etc/hadoop/hadoop-env.sh`，
     ```
-    nano etc/hadoop/hadoop-env.sh
+    $ nano etc/hadoop/hadoop-env.sh
     ```
     添加以下内容：
     ```
@@ -293,26 +293,26 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 8. 将配置文件同步到 `slave1`，`slave2` 机器中
     ```
-    scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave1:/usr/local/hadoop/
-    scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave2:/usr/local/hadoop/
+    $ scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave1:/usr/local/hadoop/
+    $ scp -r /usr/local/hadoop/hadoop-3.2.2 root@slave2:/usr/local/hadoop/
     ```
 
 6. 启动 Hadoop：
     ```
     # 格式化文件系统，只需要格式化一次，下次启动不需要格式化
-    bin/hdfs namenode -format
+    $ ./bin/hdfs namenode -format
     ```
     启动 NameNode 和 DataNode 守护进程：
     ```
-    sbin/start-dfs.sh
+    $ ./sbin/start-dfs.sh
     ```
     启动 Yarn：
     ```
-    start-yarn.sh
+    $ ./sbin/start-yarn.sh
     ```
-    日志默认保存路径为 `/usr/local/hadoop/hadoop-3.2.2/logs`。现在可以打开 NameNode 的 WebUI，默认为 `http://localhost:9870`。使用以下命令停止进程
+    日志默认保存路径为 `/usr/local/hadoop/hadoop-3.2.2/logs`。现在可以打开 NameNode 的 WebUI，默认为 `http://localhost:9870`。使用以下命令停止进程：
     ```
-    sbin/stop-all.sh
+    $ ./sbin/stop-all.sh
     ```
 
 7. 使用 `jps` 命令查看 Java 进程，此时在 `master` 应该有三个进程 `NameNode`、`SecondaryNameNode`、`ResourceManger`；在 `slave1`、`slave2` 应该有两个进程 `DataNode`、`NodeManager`。
@@ -322,15 +322,15 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 1. 在 `master` 机器中新建目录 `zookeeper`：
     ```
-    mkdir /usr/local/zookeeper
-    cd /usr/local/zookeeper
+    $ mkdir /usr/local/zookeeper
+    $ cd /usr/local/zookeeper
     ```
 
 2. 在 [Apache 镜像站](https://zookeeper.apache.org/releases.html) 下载最新的稳定版，此处下载的 ZooKeeper 版本为 `Apache ZooKeeper 3.7.0`，**注意**，此处需要下载的是 ZooKeeper 的可执行版本(apache-zookeeper-3.7.0-bin)，而并不是源码。下载完成之后解压：
     ```
-    wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz'
-    tar -xvzf apache-zookeeper-3.7.0-bin.tar.gz
-    cd apache-zookeeper-3.7.0-bin
+    $ wget 'https://dlcdn.apache.org/zookeeper/zookeeper-3.7.0/apache-zookeeper-3.7.0-bin.tar.gz'
+    $ tar -xvzf apache-zookeeper-3.7.0-bin.tar.gz
+    $ cd apache-zookeeper-3.7.0-bin
     ```
 
 3. 创建 `conf/zoo.cfg` 配置文件，添加以下配置：
@@ -350,24 +350,24 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 4. 创建 `myid` 文件，写入编号：
     ```
-    nano data/myid
-    # master 机器编号为 1
+    $ nano data/myid
+    # 写入 master 机器编号 1
     1
     ```
 
 5. 将配置好的 ZooKeeper 目录复制到其他两台机器上，并修改对应的 `myid`，`slave1` 对应编号 `2`，`slave2` 对应编号 `3`。
     ```
-    scp -r /usr/local/zookeeper root@slave1:/usr/local/
-    scp -r /usr/local/zookeeper root@slave2:/usr/local/
+    $ scp -r /usr/local/zookeeper root@slave1:/usr/local/
+    $ scp -r /usr/local/zookeeper root@slave2:/usr/local/
     ```
 
 6. 启动集群，以下命令三台机器都需要运行：
     ```
-    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh start
+    $ /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh start
     ```
     查看集群的状态：
     ```
-    /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh status
+    $ /usr/local/zookeeper/apache-zookeeper-3.7.0-bin/bin/zkServer.sh status
     ```
     集群的状态输出如下（`Mode` 会有一个 `leader`，两个 `follower`）：
     ```
@@ -379,7 +379,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 7. 连接到 ZooKeeper 客户端：
     ```
-    bin/zkCli.sh -server 127.0.0.1:2181
+    $ ./bin/zkCli.sh -server 127.0.0.1:2181
     ```
     输入 `quit` 退出 ZooKeeper 客户端。
     
@@ -388,16 +388,16 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 1. 在 `master` 机器新建以下目录：
     ```
-    mkdir /usr/local/hbase
-    mkdir /usr/local/hbase/tmp
-    cd /usr/local/hbase
+    $ mkdir /usr/local/hbase
+    $ mkdir /usr/local/hbase/tmp
+    $ cd /usr/local/hbase
     ```
 
 2. 在 [Apache 镜像站](https://dlcdn.apache.org/hbase/) 下载 HBase 镜像，此处选择的是最新的稳定版本 `hbase-2.4.11-bin`。下载完成后解压。
     ```
-    wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.11-bin.tar.gz'
-    tar -zxvf hbase-2.4.11-bin.tar.gz
-    cd hbase-2.4.11
+    $ wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.11-bin.tar.gz'
+    $ tar -zxvf hbase-2.4.11-bin.tar.gz
+    $ cd hbase-2.4.11
     ```
 
 3. 确保在启动 HBase 之前，已经设置了 `JAVA_HOME` 环境变量。修改 `conf/HBase-env.sh` 文件，添加以下内容：
@@ -430,10 +430,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
         <name>hbase.zookeeper.property.dataDir</name>
         <value>/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data</value>
     </property>
-        <property>
-        <name>hbase.coprocessor.user.region.classes</name>
-        <value>org.locationtech.geomesa.hbase.server.coprocessor.GeoMesaCoprocessor</value>
-    </property>
     <property>  
         <name>hbase.table.sanity.checks</name>  
         <value>false</value>  
@@ -448,91 +444,64 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 
 6. 将 HBase 的配置文件复制到其他机器：
     ```
-    scp -r /usr/local/hbase root@slave1:/usr/local/
-    scp -r /usr/local/hbase root@slave2:/usr/local/
+    $ scp -r /usr/local/hbase root@slave1:/usr/local/
+    $ scp -r /usr/local/hbase root@slave2:/usr/local/
     ```
 
 7. 启动 HBase：
     ```
-    bin/start-hbase.sh
+    $ ./bin/start-hbase.sh
     ```
     使用 `jps` 来查看，应该会有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://master:16010`，在各个 slave 上运行 `jps` 应该会有 `HRegionServer` 进程。
 
 8. 连接到 HBase：
     ```
-    ./bin/hbase shell
+    $ ./bin/hbase shell
     ```
     使用 `help` 命令来查看 HBase Shell 的一些基本使用信息，使用 `quit` 命令退出 HBase Shell。
 
 9. 使用以下命令停止所有的 HBase 守护进程：
     ```
-    ./bin/stop-hbase.sh
+    $ ./bin/stop-hbase.sh
     ```
 
 ---
-### GeoMesa 部署
+### GeoMesa-HBase 部署
 
-1.  在 `/usr/local/` 路径下新建目录 `geomesa`：
+1.  在 `master` 机器中新建目录 `geomesa`：
     ```
-    mkdir /usr/local/geomesa
-    cd /usr/local/geomesa
+    $ mkdir /usr/local/geomesa
+    $ cd /usr/local/geomesa
     ``` 
     从 [GitHub](https://github.com/locationtech/geomesa/releases/) 下载编译完成的二进制文件（bin），此处选的的是 `geomesa-hbase_2.11-3.2.2-bin.tar.gz`，**注意**：geomesa 有两个版本号，前面的 `2.11` 是它支持的 scala 的版本号，后面的才是它本身的版本号。下载完成之后进行解压：
     ```
-    wget 'https://github.com/locationtech/geomesa/releases/download/geomesa-3.2.2/geomesa-hbase_2.11-3.2.2-bin.tar.gz'
-    tar -zxvf geomesa-hbase_2.11-3.2.2-bin.tar.gz
-    cd geomesa-hbase_2.11-3.2.2
+    $ wget 'https://github.com/locationtech/geomesa/releases/download/geomesa-3.2.2/geomesa-hbase_2.11-3.2.2-bin.tar.gz'
+    $ tar -zxvf geomesa-hbase_2.11-3.2.2-bin.tar.gz
+    $ cd geomesa-hbase_2.11-3.2.2
     ```
 
 2. 修改配置信息。在路径 `conf/geomesa-env.sh` 中添加以下环境变量：
     ```
-    export HADOOP_HOME=/usr/local/hadoop/hadoop-3.3.1
-    export HBASE_HOME=/usr/local/hbase/hbase-2.4.9
+    export HADOOP_HOME=/usr/local/hadoop/hadoop-3.2.2
+    export HBASE_HOME=/usr/local/hbase/hbase-2.4.11
     export GEOMESA_HBASE_HOME=/usr/local/geomesa/geomesa-hbase_2.11-3.2.2
-    export PATH="${PATH}:${GEOMESA_HBASE_HOME}/bin" 
+    export PATH="${PATH}:${GEOMESA_HBASE_HOME}/bin"
     ```
     **注意**：配置 GeoMesa 的环境变量是 `GEOMESA_HBASE_HOME`。
 
-3. 部署 GeoMesa-HBase。将 GeoMesa 的 runtime JAR 包拷贝到 HBase 的库目录下。首先启动 Hadoop：
+3. 手动执行以下命令，安装所需插件：
     ```
-    # 首先启动 Hadoop
-    /usr/local/hadoop/hadoop-3.3.1/sbin/start-dfs.sh
-    ```
-    然后需要修改 HBase 的配置文件，文件路径为 `/usr/local/hbase/hbase-2.4.9/conf/hbase-site.xml`，在 `<configuration>...</configuration>` 之间添加以下内容：
-    ```
-    <property>
-        <name>hbase.rootdir</name>
-        <value>hdfs://localhost:9000/hbase</value>
-    </property>
-    <property>
-        <name>hbase.zookeeper.property.dataDir</name>
-        <value>/usr/local/hbase/hbase-2.4.9/zookeeper</value>
-    </property>
-    <property>
-        <name>hbase.cluster.distributed</name>
-        <value>true</value>
-    </property>
-    <property>
-        <name>hbase.tmp.dir</name>
-        <value>/usr/local/hbase/hbase-2.4.9/tmp</value>
-    </property>
-    <property>
-        <name>hbase.unsafe.stream.capability.enforce</name>
-        <value>false</value>
-    </property>
-    ```
-    然后修改 HBase 的运行环境配置，路径为 `/usr/local/hbase/hbase-2.4.9/conf/hbase-env.sh`，添加以下内容：
-    ```
-    export HBASE_CLASSPATH=/usr/local/hadoop/hadoop-3.3.1
-    export HBASE_MANAGES_ZK=true
-    ```
-    最后使用以下命令拷贝到 HDFS 中：
-    ```
-    # ${hbase.rootdir} 参考 HBase 的配置文件 hbase-site.xml
-    hadoop fs -put ${GEOMESA_HBASE_HOME}/dist/hbase/geomesa-hbase-distributed-runtime-hbase2_2.11-3.2.2.jar hdfs://localhost:9000/hbase/lib
+    $ ./bin/install-shapefile-support.sh
     ```
 
-4. 注册协处理器。为了使 HBase 在运行时能够访问到 `geomesa-hbase-distributed-runtime` 的 jar 包，需要在 HBase 的配置文件 `hbase-site.xml` 添加以下内容：
+4. 部署 jar 包，需要将 GeoMesa 的 runtime jar 包拷贝到 HBase 安装目录的 `lib` 文件夹，需要将该 jar 包复制到其他分布式机器上。
+    ```
+    $ cp /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/dist/hbase/geomesa-hbase-distributed-runtime-hbase2_2.11-3.2.2.jar /usr/local/hbase/hbase-2.4.11/lib/ 
+    $ scp -r /usr/local/hbase/hbase-2.4.11/lib root@slave1:/usr/local/hbase/hbase-2.4.11/
+    $ scp -r /usr/local/hbase/hbase-2.4.11/lib root@slave2:/usr/local/hbase/hbase-2.4.11/
+    ```
+
+5. 注册协处理器（Coprocessors）。使 HBase 在运行时能够访问到 `geomesa-hbase-distributed-runtime` 的 jar 包，需要在三台机器的 HBase 配置文件 `hbase-site.xml` 中添加以下内容：
     ```
     <property>
         <name>hbase.coprocessor.user.region.classes</name>
@@ -540,18 +509,26 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     </property>
     ```
 
-5. 设置命令行工具，将 HBase 配置文件 `hbase-site.xml` 打包进 `geomesa-hbase-datastore_2.11-3.2.2.jar` 中：
+6. 设置命令行工具，将 HBase 配置文件 `hbase-site.xml` 打包进 `geomesa-hbase-datastore_2.11-3.2.2.jar` 中：
     ```
-    zip -r /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/lib/geomesa-hbase-datastore_2.11-3.2.2.jar /usr/local/hbase/hbase-2.4.9/conf/hbase-site.xml
+    $ zip -r /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/lib/geomesa-hbase-datastore_2.11-3.2.2.jar /usr/local/hbase/hbase-2.4.11/conf/hbase-site.xml
     ```
 
-6. 重新启动 Hadoop、HBase、ZooKeeper，然后查看 geomesa-hbase 版本：
+7. 重新启动 Hadoop、HBase、ZooKeeper，然后查看 geomesa-hbase 版本：
     ```
     # 重新启动 HBase、Hadoop、ZooKeeper，注意关闭启动的顺序
-    /usr/local/hbase/hbase-2.4.9/bin/stop-hbase.sh
-    /usr/local/hadoop/hadoop-3.3.1/sbin/stop-all.sh 
-    /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkServer.sh stop
-    /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkServer.sh start
-    /usr/local/hadoop/hadoop-3.3.1/sbin/start-all.sh 
-    /usr/local/hbase/hbase-2.4.9/bin/start-hbase.sh
+    $ /usr/local/hbase/hbase-2.4.9/bin/stop-hbase.sh
+    $ /usr/local/hadoop/hadoop-3.3.1/sbin/stop-all.sh 
+    $ /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkServer.sh stop
+    $ /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkServer.sh start
+    $ /usr/local/hadoop/hadoop-3.3.1/sbin/start-all.sh 
+    $ /usr/local/hbase/hbase-2.4.9/bin/start-hbase.sh
+    
+    # 查看 geomesa 版本
+    $ /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/bin/geomesa-hbase version
+    # 输出以下内容，则说明部署成功
+    GeoMesa tools version: 3.2.2
+    Commit ID: 37e202eb97f64e612d0fecec75e7cdbfc280e67f
+    Branch: 37e202eb97f64e612d0fecec75e7cdbfc280e67f
+    Build date: 2021-12-09T14:30:52+0000
     ```
