@@ -311,7 +311,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     sbin/stop-all.sh
     ```
 
-7. 使用 `jps` 命令查看 Java 进程，此时在 `master` 应该有三个进程 `NameNode、SecondaryNameNode、ResourceManger`；在 `slave1`、`slave2` 应该有两个进程 `DataNode、NodeManager`。
+7. 使用 `jps` 命令查看 Java 进程，此时在 `master` 应该有三个进程 `NameNode`、`SecondaryNameNode`、`ResourceManger`；在 `slave1`、`slave2` 应该有两个进程 `DataNode`、`NodeManager`。
     
 ---
 ### ZooKeeper 部署
