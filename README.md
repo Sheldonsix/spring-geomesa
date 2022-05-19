@@ -386,36 +386,85 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
 ---
 ### HBase 部署
 
-1. 在 `/usr/local/` 路径下新建目录 `hbase`：
+1. 在 `master` 机器新建以下目录：
     ```
     mkdir /usr/local/hbase
+    mkdir /usr/local/hbase/tmp
     cd /usr/local/hbase
     ```
 
-2. 在 [Apache 镜像站](https://dlcdn.apache.org/hbase/) 下载 HBase 镜像，此处选择的是最新的稳定版本 `hbase-2.4.9-bin`。下载完成后解压。
+2. 在 [Apache 镜像站](https://dlcdn.apache.org/hbase/) 下载 HBase 镜像，此处选择的是最新的稳定版本 `hbase-2.4.11-bin`。下载完成后解压。
     ```
-    wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.9-bin.tar.gz'
-    tar -zxvf hbase-2.4.9-bin.tar.gz
-    cd hbase-2.4.9
+    wget 'https://dlcdn.apache.org/hbase/stable/hbase-2.4.11-bin.tar.gz'
+    tar -zxvf hbase-2.4.11-bin.tar.gz
+    cd hbase-2.4.11
     ```
 
 3. 确保在启动 HBase 之前，已经设置了 `JAVA_HOME` 环境变量。修改 `conf/HBase-env.sh` 文件，添加以下内容：
     ```
-    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_311  # Java 的安装路径
+    # Java 的安装路径
+    export JAVA_HOME=/usr/local/jdk/jdk1.8.0_321  
+    # 不使用 HBase 自带的 ZooKeeper
+    export HBASE_MANAGES_ZK=false 
     ```
-    使用以下命令启动 HBase：
+
+4. 修改 `conf/hbase-site.xml` 文件，在 `<configuration>` 节点加入以下配置：
+    ```
+    <property>
+        <name>hbase.cluster.distributed</name>
+        <value>true</value>
+    </property>
+    <property>
+        <name>hbase.wal.provider</name>
+        <value>filesystem</value>
+    </property>
+    <property>
+        <name>hbase.rootdir</name>
+        <value>hdfs://master:9000/hbase</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.quorum</name>
+        <value>master,slave1,slave2</value>
+    </property>
+    <property>
+        <name>hbase.zookeeper.property.dataDir</name>
+        <value>/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data</value>
+    </property>
+        <property>
+        <name>hbase.coprocessor.user.region.classes</name>
+        <value>org.locationtech.geomesa.hbase.server.coprocessor.GeoMesaCoprocessor</value>
+    </property>
+    <property>  
+        <name>hbase.table.sanity.checks</name>  
+        <value>false</value>  
+    </property>
+    ```
+
+5. 配置 `conf/regionservers`，添加从分布式机器的主机名：
+    ```
+    slave1
+    slave2
+    ```
+
+6. 将 HBase 的配置文件复制到其他机器：
+    ```
+    scp -r /usr/local/hbase root@slave1:/usr/local/
+    scp -r /usr/local/hbase root@slave2:/usr/local/
+    ```
+
+7. 启动 HBase：
     ```
     bin/start-hbase.sh
     ```
-    使用 `jps` 来查看有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://localhost:16010`。
+    使用 `jps` 来查看，应该会有一个名叫 `HMaster` 的进程，默认的 WebUI 为 `http://master:16010`，在各个 slave 上运行 `jps` 应该会有 `HRegionServer` 进程。
 
-4. 连接到 HBase：
+8. 连接到 HBase：
     ```
     ./bin/hbase shell
     ```
     使用 `help` 命令来查看 HBase Shell 的一些基本使用信息，使用 `quit` 命令退出 HBase Shell。
 
-5. 使用以下命令停止所有的 HBase 守护进程：
+9. 使用以下命令停止所有的 HBase 守护进程：
     ```
     ./bin/stop-hbase.sh
     ```
