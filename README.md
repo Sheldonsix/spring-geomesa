@@ -111,7 +111,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     nano /etc/profile
     ```
     在环境变量配置文件中新增以下代码：
-    
     ```
     export JAVA_HOME=/usr/local/jdk/jdk1.8.0_321
     export JRE_HOME=$JAVA_HOME/jre
@@ -119,9 +118,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
     ```
     键入 <kbd>Ctrl</kbd> + <kbd>x</kbd> 再输入 `y`，即可保存。
-
 4. 输入命令 `source /etc/profile` 使配置的环境变量生效。
-
 5. 输入命令 `java -version`，看到版本即安装成功。
     
     ![Java_version.png](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/Java_version.png)
@@ -134,7 +131,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     mkdir /usr/local/hadoop
     cd /usr/local/hadoop
     ```
-
 2. 从 [Apache 镜像站](https://dlcdn.apache.org/hadoop/common/) 下载 Hadoop 稳定发行版，此处选择的 Hadoop 版本为最新的稳定版 `hadoop-$VERSION`，并解压。
     ```
     wget 'https://dlcdn.apache.org/hadoop/common/hadoop-$VERSION/hadoop-$VERSION.tar.gz'
@@ -152,7 +148,7 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     export JAVA_HOME=/usr/local/jdk/jdk1.8.0_311
     ```
     配置文件修改完成后，保存退出，输入命令 `bin/hadoop`，弹出 Hadoop 的使用文档，则说明 Hadoop 环境配置完成。
-<br>
+
 4. 伪分布式部署，Hadoop 可以以伪分布式模式运行在单个节点上，其中每个 Hadoop 守护进程运行在单独的 Java 进程中。此时所在目录应在 `/usr/local/hadoop/hadoop-3.3.1`，修改 `etc/hadoop/core-site.xml` 文件：
     ```
     <configuration>
@@ -171,7 +167,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
         </property>
     </configuration>
     ```
-
 5. 检查能否免密登录 localhost：
     ```
     ssh localhost
@@ -182,7 +177,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
     chmod 0600 ~/.ssh/authorized_keys
     ```
-
 6. 格式化文件系统：
     ```
     bin/hdfs namenode -format
@@ -195,7 +189,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     ```
     sbin/stop-dfs.sh
     ```
-
 7. 也可以在 YARN 上通过设置环境参数，运行 ResourceManager 守护进程和 NodeManager 守护进程来 **伪分布式** 运行 MapReduce。在第 6 步完成的基础上，修改 `etc/hadoop/mapred-site.xml` 文件：
     ```
     # 配置如下参数，$HADOOP_MAPRED_HOME 为 Hadoop 的安装目录
