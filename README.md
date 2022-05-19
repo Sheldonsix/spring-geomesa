@@ -1,9 +1,8 @@
 # Spring-GeoMesa
 SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询。
 
-![springboot-logo](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/springboot-logo.png)
-
-![geomesa-logo](https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/geomesa-logo.png)
+<img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/springboot-logo.png" width="300px"/>
+<img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/geomesa-logo.png" width="300px"/>
 
 ### 部署版本
 
@@ -403,4 +402,4 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkServer.sh start
     /usr/local/hadoop/hadoop-3.3.1/sbin/start-all.sh 
     /usr/local/hbase/hbase-2.4.9/bin/start-hbase.sh
-
+    ```
