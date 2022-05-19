@@ -116,7 +116,6 @@ SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询
     export PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
     ```
     键入 <kbd>Ctrl</kbd> + <kbd>x</kbd> 再输入 `y`，即可保存。
-<br>
 
 4. 输入命令 `source /etc/profile` 使配置的环境变量生效。
 
