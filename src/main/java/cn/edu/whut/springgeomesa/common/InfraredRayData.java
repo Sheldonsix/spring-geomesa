@@ -86,7 +86,7 @@ public class InfraredRayData implements Data{
         List<SimpleFeature> features = new ArrayList<>();
 
         // 获取文件URL
-        URL input = getClass().getClassLoader().getResource("infraredray/infraredray.csv");
+        URL input = getClass().getClassLoader().getResource("data/infraredray.csv");
         if (input == null) {
             throw new RuntimeException("Couldn't load resource red.csv");
         }

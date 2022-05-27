@@ -4,7 +4,6 @@ import cn.edu.whut.springgeomesa.config.IGeomesaDataConfig;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.geotools.data.Query;
 import org.geotools.feature.simple.SimpleFeatureBuilder;
 import org.geotools.filter.text.cql2.CQLException;
@@ -93,13 +92,13 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
         List<SimpleFeature> features = new ArrayList<>();
 
         // 获取文件 URL
-        URL input = getClass().getClassLoader().getResource("infraredray/infraredray.csv");
+        URL input = getClass().getClassLoader().getResource("data/infraredray.csv");
         if (input == null) {
             throw new RuntimeException("Couldn't load resource infrared.csv");
         }
 
         // 数据中时间的格式：yyyy/M/d H:m
-        DateTimeFormatter dataFormat = DateTimeFormatter.ofPattern("yyyy/M/d H:m", Locale.CHINA);
+        DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/M/d H:m", Locale.CHINA);
 
         // 创建 Builder
         SimpleFeatureBuilder builder = new SimpleFeatureBuilder(getSimpleFeatureType());
@@ -119,7 +118,7 @@ public class InfraredRayDataConfig implements IGeomesaDataConfig {
                     // 批号
                     builder.set("No", record.get(2));
                     // 时间
-                    builder.set("dtg", Date.from(LocalDate.parse(record.get(3), dataFormat).atStartOfDay(ZoneOffset.UTC).toInstant()));
+                    builder.set("dtg", Date.from(LocalDate.parse(record.get(3), dateFormat).atStartOfDay(ZoneOffset.UTC).toInstant()));
                     // 波长类型
                     builder.set("WavelengthType", record.get(4));
                     // 波长
