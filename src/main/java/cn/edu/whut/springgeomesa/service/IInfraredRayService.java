@@ -13,5 +13,5 @@ public interface IInfraredRayService {
     String attributeQuery(Map<String, String> params, String waveLength, String SID);
     Boolean insertInfraredRayData(Map<String, String> params);
     Boolean deleteInfraredRayDatastore(Map<String, String> params);
-    String spatiotemporalAttributeQuery(Map<String, String> params, String SID, String PID, String No,String waveLength);
+    String spatiotemporalAttributeQuery(Map<String, String> params, String catalogName, String SID, String PID, String No,String waveLength);
 }

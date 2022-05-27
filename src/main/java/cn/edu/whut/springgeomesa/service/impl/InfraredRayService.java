@@ -19,6 +19,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
@@ -28,10 +30,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName InfraredRayService
- * @Description TODO
+ * @Description 红外数据操作
  * @Author sheldon
  * @Date 2022/5/8 17:20
  * @Version 1.0
@@ -42,6 +45,10 @@ public class InfraredRayService implements IInfraredRayService {
     private final IGeomesaRepository geomesaRepository;
     private final IGeomesaDataConfig iGeomesaDataConfig;
     private String dataTypeName;
+
+    @Autowired
+    private ValueOperations<String, Object> redisString;
+
 //    private final InfraredRayDataConfig ird = new InfraredRayDataConfig();
 
 
@@ -86,6 +93,9 @@ public class InfraredRayService implements IInfraredRayService {
             // 写出 GeoJson 格式
             fjson.writeFeatureCollection(featureCollection, writer);
             String json = writer.toString();
+            redisString.set("attributeQuery", json, 60*10, TimeUnit.SECONDS);
+            String value = (String) redisString.get("attributeQuery");
+            System.out.println(value);
             return json;
         } catch (Exception e) {
             logger.error("基本时空查询错误：" + e);
@@ -268,7 +278,7 @@ public class InfraredRayService implements IInfraredRayService {
      * @return java.lang.String
      **/
     @Override
-    public String spatiotemporalAttributeQuery(Map<String, String> params, String SID, String PID, String No, String waveLength) {
+    public String spatiotemporalAttributeQuery(Map<String, String> params, String catalogName, String SID, String PID, String No, String waveLength) {
         try {
             // 获得数据源
             DataStore dataStore = geomesaRepository.createDataStore(params);
@@ -288,6 +298,9 @@ public class InfraredRayService implements IInfraredRayService {
             // 写出 GeoJson 格式数据
             featureJSON.writeFeatureCollection(featureCollection, writer);
             String json = writer.toString();
+            redisString.set("SpatiotemporalAttributeParam" + "-" + catalogName + "-" + SID + "-" + No + "-" + PID + "-" + waveLength, json, 60*10, TimeUnit.SECONDS);
+            String value = (String) redisString.get("SpatiotemporalAttributeParam" + "-" + catalogName + "-" + SID + "-" + No + "-" + PID + "-" + waveLength);
+            System.out.println(value);
             return json;
         } catch (Exception e) {
             logger.error("时空及属性查询：" + e);
