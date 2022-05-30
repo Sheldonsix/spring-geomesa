@@ -1,9 +1,18 @@
 # Spring-GeoMesa
-SpringBoot + GeoMesa-HBase 分布式部署 + swagger-ui 实现时空轨迹查询。
+SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
 
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/springboot-logo.png" width="200" /> 
 
 <img src="https://raw.githubusercontent.com/Sheldonsix/spring-geomesa/master/img/geomesa-logo.png" width="200" /> 
+
+
+---
+## 使用方法
+1. 将项目拷贝到本地，使用 IDEA 打开项目文件夹；
+2. 完成服务器端的部署；
+3. 更改 `pom.xml` 中依赖的版本，将 `MilitaryShipTraceController.java` 和 `InfraredRayController.java` 中 `hbase.zookeepers` 的 `master,slave1,slave2` 更改为自己的 `zookeeper` 的 IP 地址；
+4. 等待依赖下载完成；
+5. 运行程序。
 
 ### 服务器部署版本
 
