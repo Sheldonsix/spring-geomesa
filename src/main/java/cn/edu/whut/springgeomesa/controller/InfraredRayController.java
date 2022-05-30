@@ -47,7 +47,7 @@ public class InfraredRayController {
     @ApiOperation(value = "写入红外数据", notes = "写入 HBase 数据源")
     @ApiImplicitParam(name = "catalogName", value = "HBase 数据源", required = true, dataType = "String", paramType = "path")
     @GetMapping(value = "/insert/{catalogName}")
-    public String insertInfrardRay(@PathVariable("catalogName") String catalogName) {
+    public String insertInfraredRay(@PathVariable("catalogName") String catalogName) {
         logger.info(catalogName + "插入红外数据……");
         GeomesaDTO geomesaDTO = new GeomesaDTO();
         geomesaDTO.setParams(new HashMap<String, String>(){

@@ -51,13 +51,13 @@ public class MilitaryShipTraceDataConfig implements IGeomesaDataConfig {
                     "*geom:Point:srid=4326," +          // 位置，纬度、经度
                     "Height:Double," +                  // 高度
                     "Distance:Double," +                // 距离
-                    "Az:Double," +
-                    "Speed:Double," +
-                    "Direction:Double," +
-                    "Type:String," +
-                    "ShipType:String," +
-                    "BelongTo:String," +
-                    "Nationality:String";
+                    "Az:Double," +                      // 方位
+                    "Speed:Double," +                   // 速度
+                    "Direction:Double," +               // 方向
+                    "Type:String," +                    // 船类型
+                    "ShipType:String," +                // 船种类
+                    "BelongTo:String," +                // 属性
+                    "Nationality:String";               // 国籍
             // 构建
             this.sft = SimpleFeatureTypes.createType(getTypeName(), builder);
 

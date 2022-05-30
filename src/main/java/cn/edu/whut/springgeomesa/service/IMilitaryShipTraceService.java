@@ -13,5 +13,5 @@ public interface IMilitaryShipTraceService {
     String attributeQuery(Map<String, String> params, String queryStr);
     Boolean insertMilitaryShipTraceData(Map<String, String> params);
     Boolean deleteMilitaryShipTraceDatastore(Map<String, String> params);
-    String spatiotemporalAttributeQuery(Map<String, String> params, String catalogName, String SID, String PID, String No,String waveLength);
+    String spatiotemporalAttributeQuery(Map<String, String> params, String queryStr);
 }
