@@ -113,4 +113,33 @@ public class MilitaryShipTraceController {
             return "删除军船轨迹数据成功";
         }
     }
+
+
+    @ApiOperation(value = "查询军船轨迹数据", notes = "查询军船轨迹数据")
+    @ApiImplicitParam(name = "catalogName", value = "HBase 数据源", required = true, dataType = "String", paramType = "path")
+    @GetMapping(value = "/spatiotemporalquery/{catalogName}")
+    public String spatiotemporalAttributeQuery(@PathVariable("catalogName") String catalogName, @RequestParam(value = "voyage", defaultValue = "72", required = false) String voyage) {
+        logger.info(catalogName + "查询军船轨迹数据……");
+        String queryStr = "dtg DURING 2022-02-13T00:00:00.000Z/2022-02-20T00:00:00.000Z AND bbox(geom,110,42,112,25)";
+        if (redisString.get(queryStr) != null) {
+            logger.info("已在 Redis 数据库中找到……");
+            String militaryShipTraceGeoJson = (String) redisString.get(queryStr);
+            return militaryShipTraceGeoJson;
+        } else {
+            GeomesaDTO geomesaDTO = new GeomesaDTO();
+            geomesaDTO.setParams(new HashMap<String, String>() {
+                {
+                    put("hbase.catalog", catalogName);
+                    put("hbase.zookeepers", "master,slave1,slave2");
+                }
+            });
+            geomesaDTO.setData(militaryShipTraceDataConfig);
+            String militaryShipTraceGeoJson = iMilitaryShipTraceService.spatiotemporalAttributeQuery(geomesaDTO.getParams(), queryStr);
+            if (militaryShipTraceGeoJson != null) {
+                return militaryShipTraceGeoJson;
+            } else {
+                return "时空查询军船轨迹数据错误";
+            }
+        }
+    }
 }

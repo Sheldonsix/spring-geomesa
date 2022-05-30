@@ -117,12 +117,11 @@ public class MilitaryShipTraceService implements IMilitaryShipTraceService {
     }
 
     @Override
-    public String spatiotemporalAttributeQuery(Map<String, String> params, String catalogName, String SID, String PID, String No, String waveLength) {
+    public String spatiotemporalAttributeQuery(Map<String, String> params, String queryStr) {
         try {
             // 获得数据源
             DataStore dataStore = geomesaRepository.createDataStore(params);
-            Query query = new Query(dataTypeName, ECQL.toFilter("SID = " + SID + " AND " + "PID = " + PID + " AND " + "Wavelength > " + waveLength + " AND " + "Wavelength < " + (Integer.parseInt(waveLength) + 1) + " AND " + "No = " + No),
-                    new String[]{"No", "WavelengthType"});
+            Query query = new Query(dataTypeName, ECQL.toFilter(queryStr));
             logger.info("正在查询：" + ECQL.toCQL(query.getFilter()));
             if (query.getPropertyNames() != null) {
                 logger.info("返回属性： " + Arrays.asList(query.getPropertyNames()));
@@ -137,9 +136,9 @@ public class MilitaryShipTraceService implements IMilitaryShipTraceService {
             // 写出 GeoJson 格式数据
             featureJSON.writeFeatureCollection(featureCollection, writer);
             String json = writer.toString();
-//            redisString.set("SpatiotemporalAttributeParam" + "-" + catalogName + "-" + SID + "-" + No + "-" + PID + "-" + waveLength, json, 60*10, TimeUnit.SECONDS);
-//            String value = (String) redisString.get("SpatiotemporalAttributeParam" + "-" + catalogName + "-" + SID + "-" + No + "-" + PID + "-" + waveLength);
-//            System.out.println(value);
+            redisString.set(queryStr, json, 60*10, TimeUnit.SECONDS);
+            String value = (String) redisString.get(queryStr);
+            System.out.println(value);
             return json;
         } catch (Exception e) {
             logger.error("时空及属性查询：" + e);
