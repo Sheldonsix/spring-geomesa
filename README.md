@@ -348,7 +348,8 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
     # tickTime：ZooKeeper 使用的基本时间单位，以毫秒为单位。
     tickTime=2000
     # dataDir：存储内存中数据库快照的位置，以及更新数据库的日志。
-    dataDir=/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data  # 此处为任意一个空目录即可
+    # myid 文件需要保存到该位置
+    dataDir=/usr/local/zookeeper/apache-zookeeper-3.7.0-bin/data  
     # clientPort：侦听客户端连接的端口
     clientPort=2181
     # server. 之后的数字为机器的编号 myid
@@ -360,6 +361,7 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
 
 4. 创建 `myid` 文件，写入编号：
     ```
+    $ mkdir data
     $ nano data/myid
     # 写入 master 机器编号 1
     1
