@@ -536,7 +536,7 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
     $ /usr/local/hadoop/hadoop-3.3.1/sbin/start-all.sh 
     $ /usr/local/hbase/hbase-2.4.9/bin/start-hbase.sh
     
-    # 查看 geomesa 版本
+    # 查看 geomesa 版本，这个过程可能会下载几个 jar 包
     $ /usr/local/geomesa/geomesa-hbase_2.11-3.2.2/bin/geomesa-hbase version
     # 输出以下内容，则说明部署成功
     GeoMesa tools version: 3.2.2
