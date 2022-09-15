@@ -544,3 +544,5 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
     Branch: 37e202eb97f64e612d0fecec75e7cdbfc280e67f
     Build date: 2021-12-09T14:30:52+0000
     ```
+
+8. 注意：如果要运行官方的 [quickstart 教程](https://github.com/geomesa/geomesa-tutorials)，一定要注意 GeoMesa 和 geomesa-tutorials 版本一致。例如 GeoMesa 的版本为 `3.2.2`，那要选择 `3.2.0` 版本的 geomesa-tutorials。
