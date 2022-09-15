@@ -517,7 +517,7 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
     ```
     <property>
         <name>hbase.coprocessor.user.region.classes</name>
-        <value>org.locationtech.geomesa.hbase.coprocessor.GeoMesaCoprocessor</value>
+        <value>org.locationtech.geomesa.hbase.server.coprocessor.GeoMesaCoprocessor</value>
     </property>
     ```
 
