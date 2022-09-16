@@ -545,4 +545,18 @@ SpringBoot + GeoMesa-HBase 实现时空轨迹分布式查询。
     Build date: 2021-12-09T14:30:52+0000
     ```
 
-8. 注意：如果要运行官方的 [quickstart 教程](https://github.com/geomesa/geomesa-tutorials)，一定要注意 GeoMesa 和 geomesa-tutorials 版本一致。例如 GeoMesa 的版本为 `3.2.2`，那要选择 `3.2.0` 版本的 geomesa-tutorials。
+8. 注意：如果要运行官方的 [quickstart](https://github.com/geomesa/geomesa-tutorials)，一定要注意 GeoMesa 和 geomesa-tutorials 版本对应。例如 GeoMesa 的版本为 `3.2.2`，那要选择 `3.2.0` 版本的 geomesa-tutorials。
+    ```
+    # 如果 geomesa 的操作卡住或无法完成，可以先关闭 HBase，再利用 zookeeper 和 Hadoop 的命令来删除 HBase 中的表
+    
+    # zookeeper 删除 HBase 表
+    $ /usr/local/zookeeper/apache-zookeeper-3.6.3-bin/bin/zkCli.sh
+    $ deleteall /hbase
+    $ quit
+
+    # Hadoop 删除 HBase 表
+    $ /usr/local/hadoop/hadoop-3.2.2/bin/hdfs dfs -rm -r -f /hbase
+
+    # 启动 HBase
+    $ /usr/local/hbase/hbase-2.4.9/bin/start-hbase.sh
+    ```
